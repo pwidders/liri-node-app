@@ -1,8 +1,8 @@
 require("dotenv").config();
 var Spotify = require("node-spotify-api");
 var inquirer = require("inquirer");
-var request = require('request');
-var fs = require('random.txt');
+var request = require("request");
+// var fs = require("random.txt");
 
 // Add the code required to import the `keys.js` file and store it in a variable.
 
@@ -162,14 +162,14 @@ mainMenu();
 // }
 
 // Do what it says: node liri.js do-what-it-says
-// It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
+// // It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
 
-function doIt() {
-    fs.readFile('random.txt', function (err, data) {
-        if (err) throw err;
+// function doIt() {
+//     fs.readFile('random.txt', function (err, data) {
+//         if (err) throw err;
 
-    console.log(data);
-    })
-}
+//     console.log(data);
+//     })
+// }
 
 
