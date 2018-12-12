@@ -8,15 +8,6 @@ var request = require('request');
 var keys = require('./keys.js');
 var spotify = new Spotify(keys.spotify);
 
-// spotify.search({ type: 'track', query: 'All the Small Things' })
-// .then(function(response) {
-//   console.log(response.tracks.items);
-// })
-// .catch(function(err) {
-//   console.log(err);
-// });
-
-
 // Make it so liri.js can take in one of the following commands:
     //    * `concert-this`
     //    * `movie-this`
@@ -39,6 +30,7 @@ var spotify = new Spotify(keys.spotify);
         // call on a function to call spotify API
         case 'spotify-this-song':
             spotifyIt();
+            mainMenu();
             break;
         // call on concert-this function
         case "concert-this":
@@ -70,29 +62,43 @@ mainMenu();
     //    * If no song is provided then your program will default to "The Sign" by Ace of Base.
 
     function spotifyIt() {
-    // Prompt user for input
-    inquirer.prompt([
-        {
-          type: "input",
-          message: "Please enter the name of the song your looking for:",
-          name: "userSong"
-        }
-        ]).then (function(userChoice) {
-            var spotifyArr = [];
+        // Prompt user for input
+        inquirer.prompt([
+          {
+            type: "input",
+            message: "Please enter the name of the song your looking for:",
+            name: "userSong"
+          }
+        ])
+        .then(function (userChoice) {
             spotify.search({ type: 'track', query: userChoice.userSong })
-            .then(function(response) {
-                //console.log(response.tracks.items);
-                for(i = 0; i < response.length; i++);
-                
-               
-                });
-            })
-            console.log(spotifyArr);
-            // .catch(function(err) {
-            // console.log(err);
-            // });
+                .then(function (response) {
+                    var resultObjects = response.tracks.items;
+                    // Empty array to hold objects before printing to console
+                    var trackResults = [];
+                        // for loop to iterate through results
+                        for (i = 0; i < resultObjects.length; i++) {
+                        //console.log(resultObjects[i].album.name);
+                        // create a new object
+                        var track = new Object();
+                        track.artist = resultObjects[i].artists.name;
+                        track.song = resultObjects[i].name;
+                        track.previewLink = resultObjects[i].preview_url;
+                        track.album = resultObjects[i].album.name;
+                        // push that object into trackResults array
+                        trackResults.push(track);
+                        }
+                    // Console log search results
+                    console.log(trackResults);
+                })
         })
-    };
+    mainMenu();
+    }
+
+            
+        
+    
+       
 
 
 // Concert-this: `node liri.js concert-this <artist/band name here>`
@@ -102,50 +108,26 @@ mainMenu();
     //    * Venue location
     //    * Date of the Event (use moment to format this as "MM/DD/YYYY")
 
-    function concertIt() {
-        // Prompt user for input
-        inquirer.prompt([
-            {
-              type: "input",
-              message: "Please enter the group/artist:",
-              name: "userGroup"
-            }
-        ]).then (function(userBand) {
-            var artistInfo = [];
-            var artist = userBand.userGroup;
-            request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
-            var parsedBody = JSON.parse(body);
-            for (i=0; i < parsedBody.length; i++) {
-                // pull object's information needed
-                console.log(parsedBody[i]);
-            }
-            console.log('error:', error); // Print the error if one occurred
-            console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-            // console.log('body:', body); // Print the HTML for the Google homepage.
-            });
-        })
-    }
-
-
-
-    // Movie-this: `node liri.js movie-this '<movie name here>'`
-    //   * If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
-    //   * You'll use the request package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `trilogy`.
-    //   * This will output the following information to your terminal/bash window:
-
-    //    * Title of the movie.
-    //    * Year the movie came out.
-    //    * IMDB Rating of the movie.
-    //    * Rotten Tomatoes Rating of the movie.
-    //    * Country where the movie was produced.
-    //    * Language of the movie.
-    //    * Plot of the movie.
-    //    * Actors in the movie.
-    //      
-
-
-
-// Do-what-it-says: `node liri.js do-what-it-says`
-    //   * Using the `fs` Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
-    //   * It should run `spotify-this-song` for "I Want it That Way," as follows the text in `random.txt`.
-    //   * Feel free to change the text in that document to test out the feature for other commands.
+    // function concertIt() {
+    //     // Prompt user for input
+    //     inquirer.prompt([
+    //         {
+    //           type: "input",
+    //           message: "Please enter the group/artist:",
+    //           name: "userGroup"
+    //         }
+    //     ]).then (function(userBand) {
+    //         var artistInfo = [];
+    //         var artist = userBand.userGroup;
+    //         request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
+    //         var parsedBody = JSON.parse(body);
+    //         for (i=0; i < parsedBody.length; i++) {
+    //             // pull object's information needed
+    //             console.log(parsedBody[i]);
+    //         }
+    //         console.log('error:', error); // Print the error if one occurred
+    //         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+    //         // console.log('body:', body); // Print the HTML for the Google homepage.
+    //         });
+    //     })
+    // 
