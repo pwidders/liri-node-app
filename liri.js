@@ -2,6 +2,7 @@ require("dotenv").config();
 var Spotify = require("node-spotify-api");
 var inquirer = require("inquirer");
 var request = require('request');
+var fs = require('random.txt');
 
 // Add the code required to import the `keys.js` file and store it in a variable.
 
@@ -109,23 +110,66 @@ mainMenu();
         inquirer.prompt([
             {
               type: "input",
-              message: "Please enter the group/artist:",
+              message: "Please enter the group/artist you wish to see. A blank '[]' means there's no live shows planned:",
               name: "userGroup"
             }
         ])
+        .then(function (userChoice) {
+            var artist = userChoice.userGroup;
+            request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
+                //var parsedBody = JSON.parse(response);
+                console.log('error:', error); // Print the error if one occurred
+                //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+                //console.log('body:', body); // Print the HTML for the Google homepage.
+            });
+            var parsedBody = JSON.parse(response);
+            var showResults = [];
+            for(i = 0; 1 < parsedBody.length; i++) {
+                // create a new object
+                console.log(parsedBody[i].body.offers);
+                // var show = new Object();
+                // show.venue: ;
+                // show.location: ;
+                // show.date:
+
+                // push that object into trackResults array
+                //showResults.push( );
+            }
+            // Console log search results
+            // console.log(trackResults);
+            //Console log any errors
+            if (err) {
+                return console.log('Error occurred: ' + err);
+            }
+        })
+ 
     }
-        // ]).then (function(userBand) {
-        //     var artistInfo = [];
-        //     var artist = userBand.userGroup;
-        //     request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
-        //     var parsedBody = JSON.parse(body);
-        //     for (i=0; i < parsedBody.length; i++) {
-        //         // pull object's information needed
-        //         console.log(parsedBody[i]);
-        //     }
-        //     console.log('error:', error); // Print the error if one occurred
-        //     console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        //     // console.log('body:', body); // Print the HTML for the Google homepage.
-        //     });
-        // })
-    
+            
+// Movie-this: node liri.js movie-this '<movie name here>'
+// If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
+// This will output the following information:
+    //  * Title of the movie.
+    //  * Year the movie came out.
+    //  * IMDB Rating of the movie.
+    //  * Rotten Tomatoes Rating of the movie.
+    //  * Country where the movie was produced.
+    //  * Language of the movie.
+    //  * Plot of the movie.
+    //  * Actors in the movie.
+
+// function movieIt() {
+
+// }
+
+// Do what it says: node liri.js do-what-it-says
+// It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
+
+function doIt() {
+    fs.readFile('random.txt', function (err, data) {
+        if (err) throw err;
+
+    console.log(data);
+    })
+}
+
+
