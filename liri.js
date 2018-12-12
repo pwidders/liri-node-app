@@ -30,7 +30,6 @@ var spotify = new Spotify(keys.spotify);
         // call on a function to call spotify API
         case 'spotify-this-song':
             spotifyIt();
-            mainMenu();
             break;
         // call on concert-this function
         case "concert-this":
@@ -66,13 +65,13 @@ mainMenu();
         inquirer.prompt([
           {
             type: "input",
-            message: "Please enter the name of the song your looking for:",
+            message: "Please enter only the song title your looking for:",
             name: "userSong"
           }
         ])
         .then(function (userChoice) {
             spotify.search({ type: 'track', query: userChoice.userSong })
-                .then(function (response) {
+                .then(function (response, err) {
                     var resultObjects = response.tracks.items;
                     // Empty array to hold objects before printing to console
                     var trackResults = [];
@@ -90,16 +89,13 @@ mainMenu();
                         }
                     // Console log search results
                     console.log(trackResults);
+                    //Console log any errors
+                    if (err) {
+                        return console.log('Error occurred: ' + err);
+                    }
                 })
         })
-    mainMenu();
     }
-
-            
-        
-    
-       
-
 
 // Concert-this: `node liri.js concert-this <artist/band name here>`
 // This will search the Bands in Town Artist Events API ("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp") for an artist and render the following information about each event to the terminal:
@@ -108,26 +104,28 @@ mainMenu();
     //    * Venue location
     //    * Date of the Event (use moment to format this as "MM/DD/YYYY")
 
-    // function concertIt() {
-    //     // Prompt user for input
-    //     inquirer.prompt([
-    //         {
-    //           type: "input",
-    //           message: "Please enter the group/artist:",
-    //           name: "userGroup"
-    //         }
-    //     ]).then (function(userBand) {
-    //         var artistInfo = [];
-    //         var artist = userBand.userGroup;
-    //         request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
-    //         var parsedBody = JSON.parse(body);
-    //         for (i=0; i < parsedBody.length; i++) {
-    //             // pull object's information needed
-    //             console.log(parsedBody[i]);
-    //         }
-    //         console.log('error:', error); // Print the error if one occurred
-    //         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-    //         // console.log('body:', body); // Print the HTML for the Google homepage.
-    //         });
-    //     })
-    // 
+    function concertIt() {
+        // Prompt user for input
+        inquirer.prompt([
+            {
+              type: "input",
+              message: "Please enter the group/artist:",
+              name: "userGroup"
+            }
+        ])
+    }
+        // ]).then (function(userBand) {
+        //     var artistInfo = [];
+        //     var artist = userBand.userGroup;
+        //     request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
+        //     var parsedBody = JSON.parse(body);
+        //     for (i=0; i < parsedBody.length; i++) {
+        //         // pull object's information needed
+        //         console.log(parsedBody[i]);
+        //     }
+        //     console.log('error:', error); // Print the error if one occurred
+        //     console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        //     // console.log('body:', body); // Print the HTML for the Google homepage.
+        //     });
+        // })
+    
