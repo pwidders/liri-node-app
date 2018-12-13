@@ -74,6 +74,7 @@ mainMenu();
             spotify.search({ type: 'track', query: userChoice.userSong })
                 .then(function (response, err) {
                     var resultObjects = response.tracks.items;
+                    console.log("\n",resultObjects[0].album.artists[0].name,"\n");
                     // Empty array to hold objects before printing to console
                     var trackResults = [];
                         // for loop to iterate through results
@@ -81,7 +82,7 @@ mainMenu();
                         //console.log(resultObjects[i].album.name);
                         // create a new object
                         var track = new Object();
-                        track.artist = resultObjects[i].artists.name;
+                        track.artist = resultObjects[i].album.artists[0].name;
                         track.song = resultObjects[i].name;
                         track.previewLink = resultObjects[i].preview_url;
                         track.album = resultObjects[i].album.name;
