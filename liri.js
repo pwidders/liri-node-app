@@ -118,12 +118,12 @@ mainMenu();
         .then(function (userChoice) {
             var artist = userChoice.userGroup;
             request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
-                console.log('error:', error); // Print the error if one occurred
+                //console.log('error:', error); // Print the error if one occurred
                 //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-                //console.log(body);
                 var parsedBody = JSON.parse(body);
                 // empty array to hold data to be consoled
                 var showtimes = [];
+                    // for loop to iterate through the response array
                     for (i = 0; i < parsedBody.length; i++) {
                         // console.log(parsedBody[i].venue);
                         // create a new object
@@ -146,36 +146,6 @@ mainMenu();
             })
         })
     }
-
-        // .then(function (userChoice) {
-        //     var artist = userChoice.userGroup;
-        //     request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
-        //         //var parsedBody = JSON.parse(response);
-        //         console.log('error:', error); // Print the error if one occurred
-        //         //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        //         //console.log('body:', body); // Print the HTML for the Google homepage.
-        //     });
-        //     var parsedBody = JSON.parse(response);
-        //     var showResults = [];
-        //     for(i = 0; 1 < parsedBody.length; i++) {
-        //         // create a new object
-        //         console.log(parsedBody[i].body.offers);
-        //         // var show = new Object();
-        //         // show.venue: ;
-        //         // show.location: ;
-        //         // show.date:
-
-        //         // push that object into trackResults array
-        //         //showResults.push( );
-        //     }
-        //     // Console log search results
-        //     // console.log(trackResults);
-        //     //Console log any errors
-        //     if (err) {
-        //         return console.log('Error occurred: ' + err);
-        //     }
-        // })
- 
             
 // Movie-this: node liri.js movie-this '<movie name here>'
 // If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
@@ -189,9 +159,40 @@ mainMenu();
     //  * Plot of the movie.
     //  * Actors in the movie.
 
-// function movieIt() {
-
-// }
+    function movieIt() {
+        // Prompt user for input
+        inquirer.prompt([
+            {
+              type: "input",
+              message: "Please enter the movie you're looking for:",
+              name: "userMovie"
+            }
+        ])
+        .then(function (userChoice) {
+            var movie = userChoice.userMovie;
+            request("http://www.omdbapi.com/?apikey=trilogy&t=" + movie, function (error, response, body) {
+                // console.log('error:', error); // Print the error if one occurred
+                // console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+                var parsedBody = JSON.parse(body);
+                // console.log(parsedBody.Ratings[1].Value); 
+                // Empty array to hold the search results
+                var movieArray = [];
+                // create a new object
+                var movieInfo = new Object();
+                movieInfo.title = parsedBody.Title;
+                movieInfo.year = parsedBody.Year;
+                movieInfo.imdbRating = parsedBody.imdbRating;
+                movieInfo.rottenTomatoes = parsedBody.Ratings[1].Value;
+                movieInfo.country = parsedBody.Country;
+                movieInfo.language = parsedBody.Language;
+                movieInfo.plot = parsedBody.Plot;
+                movieInfo.actors = parsedBody.Actors;
+                // push showListing object into showtimes array
+                movieArray.push(movieInfo);
+                console.log(movieArray);
+            });
+        });
+    }
 
 // Do what it says: node liri.js do-what-it-says
 // It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
