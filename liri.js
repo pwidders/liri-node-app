@@ -1,8 +1,9 @@
 require("dotenv").config();
 var Spotify = require("node-spotify-api");
 var inquirer = require("inquirer");
-var request = require("request");
-// var fs = require("random.txt");
+var request = require("request"); 
+var fs = require("fs");
+var moment = require('moment');
 
 // Add the code required to import the `keys.js` file and store it in a variable.
 
@@ -51,7 +52,7 @@ mainMenu();
 
 
 // * `spotify-this-song`
-// * You will utilize the [node-spotify-api](https://www.npmjs.com/package/node-spotify-api) package in order to retrieve song information from the Spotify API.
+// * Utilize the [node-spotify-api](https://www.npmjs.com/package/node-spotify-api) package in order to retrieve song information from the Spotify API.
 // * Navigate to <https://developer.spotify.com/my-applications/#!/applications/create> to register a new application to be used with the Spotify API. You can fill in whatever you'd like for these fields. When finished, click the "complete" button.
     
     //* This will show the following information about the song in your terminal/bash window
@@ -74,12 +75,11 @@ mainMenu();
             spotify.search({ type: 'track', query: userChoice.userSong })
                 .then(function (response, err) {
                     var resultObjects = response.tracks.items;
-                    console.log("\n",resultObjects[0].album.artists[0].name,"\n");
+                    // test API- console.log("\n",resultObjects[0].album.artists[0].name,"\n");
                     // Empty array to hold objects before printing to console
                     var trackResults = [];
                         // for loop to iterate through results
                         for (i = 0; i < resultObjects.length; i++) {
-                        //console.log(resultObjects[i].album.name);
                         // create a new object
                         var track = new Object();
                         track.artist = resultObjects[i].album.artists[0].name;
@@ -118,33 +118,64 @@ mainMenu();
         .then(function (userChoice) {
             var artist = userChoice.userGroup;
             request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
-                //var parsedBody = JSON.parse(response);
                 console.log('error:', error); // Print the error if one occurred
                 //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-                //console.log('body:', body); // Print the HTML for the Google homepage.
-            });
-            var parsedBody = JSON.parse(response);
-            var showResults = [];
-            for(i = 0; 1 < parsedBody.length; i++) {
-                // create a new object
-                console.log(parsedBody[i].body.offers);
-                // var show = new Object();
-                // show.venue: ;
-                // show.location: ;
-                // show.date:
-
-                // push that object into trackResults array
-                //showResults.push( );
-            }
-            // Console log search results
-            // console.log(trackResults);
-            //Console log any errors
-            if (err) {
-                return console.log('Error occurred: ' + err);
-            }
+                //console.log(body);
+                var parsedBody = JSON.parse(body);
+                // empty array to hold data to be consoled
+                var showtimes = [];
+                    for (i = 0; i < parsedBody.length; i++) {
+                        // console.log(parsedBody[i].venue);
+                        // create a new object
+                        var showListing = new Object();
+                        showListing.venue = parsedBody[i].venue.name;
+                        showListing.country = parsedBody[i].venue.country;
+                        showListing.region = parsedBody[i].venue.region;
+                        showListing.city = parsedBody[i].venue.city;
+                        showListing.venueDate = parsedBody[i].datetime;
+                        
+                        // convert response date to MM/DD/YYYY // <-------Do this
+                        // var venueDate = parsedBody[i].datetime;
+                        // (venueDate).format('MM/DD/YYYY');
+                        // console.log(venueDate);
+                        
+                        // push showListing object into showtimes array
+                        showtimes.push(showListing);
+                        console.log(showListing);
+                    }
+            })
         })
- 
     }
+
+        // .then(function (userChoice) {
+        //     var artist = userChoice.userGroup;
+        //     request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
+        //         //var parsedBody = JSON.parse(response);
+        //         console.log('error:', error); // Print the error if one occurred
+        //         //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        //         //console.log('body:', body); // Print the HTML for the Google homepage.
+        //     });
+        //     var parsedBody = JSON.parse(response);
+        //     var showResults = [];
+        //     for(i = 0; 1 < parsedBody.length; i++) {
+        //         // create a new object
+        //         console.log(parsedBody[i].body.offers);
+        //         // var show = new Object();
+        //         // show.venue: ;
+        //         // show.location: ;
+        //         // show.date:
+
+        //         // push that object into trackResults array
+        //         //showResults.push( );
+        //     }
+        //     // Console log search results
+        //     // console.log(trackResults);
+        //     //Console log any errors
+        //     if (err) {
+        //         return console.log('Error occurred: ' + err);
+        //     }
+        // })
+ 
             
 // Movie-this: node liri.js movie-this '<movie name here>'
 // If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
@@ -163,14 +194,37 @@ mainMenu();
 // }
 
 // Do what it says: node liri.js do-what-it-says
-// // It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
+// It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
 
-// function doIt() {
-//     fs.readFile('random.txt', function (err, data) {
-//         if (err) throw err;
-
-//     console.log(data);
-//     })
-// }
-
-
+    function doIt() {
+        var randomText = fs.readFileSync
+        ('random.txt', 'utf8');
+        console.log(randomText);
+        
+        // function (userChoice) {
+        //     spotify.search({ type: 'track', query: userChoice.userSong })
+        //         .then(function (response, err) {
+        //             var resultObjects = response.tracks.items;
+        //             // Empty array to hold objects before printing to console
+        //             var trackResults = [];
+        //                 // for loop to iterate through results
+        //                 for (i = 0; i < resultObjects.length; i++) {
+        //                 //console.log(resultObjects[i].album.name);
+        //                 // create a new object
+        //                 var track = new Object();
+        //                 track.artist = resultObjects[i].album.artists[0].name;
+        //                 track.song = resultObjects[i].name;
+        //                 track.previewLink = resultObjects[i].preview_url;
+        //                 track.album = resultObjects[i].album.name;
+        //                 // push that object into trackResults array
+        //                 trackResults.push(track);
+        //                 }
+        //             // Console log search results
+        //             console.log(trackResults);
+        //             //Console log any errors
+        //             if (err) {
+        //                 return console.log('Error occurred: ' + err);
+        //             }
+        //         })
+        // }
+    }
