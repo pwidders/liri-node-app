@@ -62,17 +62,17 @@ mainMenu();
     //    * The album that the song is from
     //    * If no song is provided then your program will default to "The Sign" by Ace of Base.
 
-    function spotifyIt() {
+    function spotifyIt(songTitle = 'The Sign Ace of Base') {
         // Prompt user for input
         inquirer.prompt([
           {
             type: "input",
-            message: "Please enter only the song title your looking for:",
+            message: "Please enter only the song title your looking for (defaults to " + songTitle + "): ",
             name: "userSong"
           }
         ])
         .then(function (userChoice) {
-            spotify.search({ type: 'track', query: userChoice.userSong })
+            spotify.search({ type: 'track', query: userChoice.userSong || songTitle })
                 .then(function (response, err) {
                     var resultObjects = response.tracks.items;
                     // test API- console.log("\n",resultObjects[0].album.artists[0].name,"\n");
@@ -132,12 +132,10 @@ mainMenu();
                         showListing.country = parsedBody[i].venue.country;
                         showListing.region = parsedBody[i].venue.region;
                         showListing.city = parsedBody[i].venue.city;
-                        showListing.venueDate = parsedBody[i].datetime;
                         
                         // convert response date to MM/DD/YYYY // <-------Do this
-                        // var venueDate = parsedBody[i].datetime;
-                        // (venueDate).format('MM/DD/YYYY');
-                        // console.log(venueDate);
+                        var venueDate = parsedBody[i].datetime;
+                        showListing.venueDate = moment(venueDate).format('MM/DD/YYYY LT');
                         
                         // push showListing object into showtimes array
                         showtimes.push(showListing);
@@ -169,7 +167,7 @@ mainMenu();
             }
         ])
         .then(function (userChoice) {
-            var movie = userChoice.userMovie;
+            var movie = userChoice.userMovie || 'Mr. Nobody';
             request("http://www.omdbapi.com/?apikey=trilogy&t=" + movie, function (error, response, body) {
                 // console.log('error:', error); // Print the error if one occurred
                 // console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
@@ -198,34 +196,16 @@ mainMenu();
 // It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
 
     function doIt() {
-        var randomText = fs.readFileSync
-        ('random.txt', 'utf8');
-        console.log(randomText);
-        
-        // function (userChoice) {
-        //     spotify.search({ type: 'track', query: userChoice.userSong })
-        //         .then(function (response, err) {
-        //             var resultObjects = response.tracks.items;
-        //             // Empty array to hold objects before printing to console
-        //             var trackResults = [];
-        //                 // for loop to iterate through results
-        //                 for (i = 0; i < resultObjects.length; i++) {
-        //                 //console.log(resultObjects[i].album.name);
-        //                 // create a new object
-        //                 var track = new Object();
-        //                 track.artist = resultObjects[i].album.artists[0].name;
-        //                 track.song = resultObjects[i].name;
-        //                 track.previewLink = resultObjects[i].preview_url;
-        //                 track.album = resultObjects[i].album.name;
-        //                 // push that object into trackResults array
-        //                 trackResults.push(track);
-        //                 }
-        //             // Console log search results
-        //             console.log(trackResults);
-        //             //Console log any errors
-        //             if (err) {
-        //                 return console.log('Error occurred: ' + err);
-        //             }
-        //         })
-        // }
+        var randomText = fs.readFileSync('random.txt', 'utf8');
+        //console.log(randomText);
+        var splitRandom = randomText.split(/\r?\n/);
+        console.log('splitRandom', splitRandom);
+        // loop through splitRandom
+        for (var i = 0; i < splitRandom.length; i++) {
+            // new variable holding splitRandom on comma
+            var commaSplit = splitRandom[i].split(',');
+            // call corresponding function to run
+            // determine which method to call/run based on what's in comma split
+            spotifyIt(commaSplit[1]);
+        }
     }
